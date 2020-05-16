@@ -12,7 +12,8 @@ class Counter extends Component {
         url: "",
         id: "",
         templateData: [],
-        versionsArray: []
+        versionsArray: [],
+        showSpinner:false
     }
     componentDidMount() {
         this.props.getTemplateData();
@@ -27,6 +28,11 @@ class Counter extends Component {
                 }
             })
             this.setState({ templateData: newTemplateObject })
+        }
+        if(newProps.showSpinner == false){
+            this.setState({
+                showSpinner:false
+            })
         }
     }
 
@@ -59,9 +65,17 @@ class Counter extends Component {
         })
     }
     onSubmitDeployment = (object) => {
-        this.props.onSubmitDeployment(object);
+        if(object.name && object.versions && object.url){
+            this.setState({
+                showSpinner:true
+            })
+            this.props.onSubmitDeployment(object);
+        }
     }
     onDeleteDeployment = (id) => {
+        this.setState({
+            showSpinner:true
+        })
         this.props.onDeleteDeployment(id);
     }
 
@@ -69,7 +83,7 @@ class Counter extends Component {
     render() {
         return (
             <div>
-                {/* {JSON.stringify(this.props.deployedResponse)} */}
+             {/* {JSON.stringify(this.state.showSpinner)}  */}
                 <div className="addControl">
                 <div className="row">
                 <div className="col-3">
@@ -85,8 +99,10 @@ class Counter extends Component {
                 </div>
             </div>
                 </div>
-
                <hr />
+               <div className="spinner-div">
+               {this.state.showSpinner?<div className="loader"></div>:""}
+               </div>
                 <ul>
                     {this.props.storedResults.map(strResult => (
                         <div key={strResult._id} className="showControl">
@@ -115,10 +131,11 @@ class Counter extends Component {
 
 const mapStateToProps = state => {
     return {
-        templateObject: state.ctr.templateData,
-        ctr: state.ctr.counter,
-        storedResults: state.res.results,
-        deployedResponse: state.res.response
+        templateObject: state.template.templateData,
+        ctr: state.template.counter,
+        storedResults: state.deploy.results,
+        showSpinner:state.deploy.showSpinner,
+        deployedResponse: state.deploy.response
     }
 };
 

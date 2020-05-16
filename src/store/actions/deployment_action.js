@@ -55,7 +55,8 @@ export const getDeployment = () => {
                 console.log(response);
                 let obj1 = {
                     type: actionTypes.GET_DEPLOYMENTS,
-                    res: response.data
+                    res: response.data,
+                    showSpinner: false
                 };
                 dispatch(obj1);
             })

@@ -4,15 +4,15 @@ import { Provider } from 'react-redux';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 
-import counterReducer from './store/reducers/template_reducer';
-import resultReducer from './store/reducers/deployment_reducer';
+import TemplateReducer from './store/reducers/template_reducer';
+import deploymentReducer from './store/reducers/deployment_reducer';
 import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 const rootReducer = combineReducers({
-    ctr: counterReducer,
-    res: resultReducer
+    template: TemplateReducer,
+    deploy: deploymentReducer
 });
 
 const logger = store => {
