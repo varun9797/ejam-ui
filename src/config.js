@@ -1,0 +1,1 @@
+export const HOST_API = "http://ejam-api.us-east-1.elasticbeanstalk.com/"

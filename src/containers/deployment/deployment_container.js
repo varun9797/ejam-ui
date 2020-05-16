@@ -33,7 +33,7 @@ class Counter extends Component {
     deploymentNameChanges = (e) => {
         this.setState({
             name: e.target.value,
-            versions:""
+            versions:null
         })
     }
     deploymentVersionChanges = (e) => {
@@ -49,7 +49,8 @@ class Counter extends Component {
     onDeploymentTemplateSelected = (data) => {
         this.setState({
             name: data.label,
-            versionsArray: data.value
+            versionsArray: data.value,
+            versions:""
         })
     }
     onDeploymentVersionSelected = (data) => {
@@ -88,7 +89,7 @@ class Counter extends Component {
                <hr />
                 <ul>
                     {this.props.storedResults.map(strResult => (
-                        <div className="showControl">
+                        <div key={strResult._id} className="showControl">
                         <div className="row">
                             <div className="col-3">
                                 {strResult.name}

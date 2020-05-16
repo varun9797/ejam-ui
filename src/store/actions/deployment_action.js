@@ -1,12 +1,13 @@
 import * as actionTypes from './action';
 import axios from 'axios';
 import * as actionCreators from '../../store/actions/index';
+import * as config from './../../config'
 
 export const submitDeployment = (obj) => {
     return (dispatch, getState) => {
         axios({
             method: 'post',
-            url: 'http://ejam-api.us-east-1.elasticbeanstalk.com/deployment/list',
+            url: config.HOST_API+'deployment/list',
             data: {
                 "name": obj.name,
                 "versions": obj.versions,
@@ -28,7 +29,7 @@ export const onDeleteDeployment = (id) => {
     return (dispatch, getState) => {
         axios({
             method: 'delete',
-            url: 'http://ejam-api.us-east-1.elasticbeanstalk.com/deployment/list',
+            url: config.HOST_API+'deployment/list',
             data: { _id: id }
 
         })
@@ -48,7 +49,7 @@ export const getDeployment = () => {
     return (dispatch, getState) => {
         axios({
             method: 'get',
-            url: 'http://ejam-api.us-east-1.elasticbeanstalk.com/deployment/list'
+            url: config.HOST_API+'deployment/list'
         })
             .then(function (response) {
                 console.log(response);

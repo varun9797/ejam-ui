@@ -1,10 +1,11 @@
 import * as actionTypes from './action';
 import axios from 'axios';
+import * as config from "./../../config";
 export const getTemplate = () => {
     return (dispatch, getState) => {
         axios({
             method: 'get',
-            url: 'http://ejam-api.us-east-1.elasticbeanstalk.com/deployment/templates'
+            url: config.HOST_API+'deployment/templates'
         })
             .then(function (response) {
                 console.log(response);
