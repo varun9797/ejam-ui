@@ -26,7 +26,6 @@ class Counter extends Component {
                     value: value.versions, label: value.name
                 }
             })
-            console.log("**********",newTemplateObject);
             this.setState({ templateData: newTemplateObject })
         }
     }
@@ -49,7 +48,8 @@ class Counter extends Component {
     onDeploymentTemplateSelected = (data) => {
         this.setState({
             name: data.label,
-            versionsArray: data.value
+            versionsArray: data.value,
+            versions:""
         })
     }
     onDeploymentVersionSelected = (data) => {
@@ -58,11 +58,9 @@ class Counter extends Component {
         })
     }
     onSubmitDeployment = (object) => {
-        console.log("onsubmit deployment")
         this.props.onSubmitDeployment(object);
     }
     onDeleteDeployment = (id) => {
-        console.log("in the delete handler!!!");
         this.props.onDeleteDeployment(id);
     }
 
@@ -76,7 +74,7 @@ class Counter extends Component {
                 <div className="col-3">
                     <Dropdown options={this.state.templateData} value={this.state.name} onChange={this.onDeploymentTemplateSelected} placeholder="Select Template" /></div>
                 <div className="col-3">
-                <Dropdown options={this.state.versionsArray} value={this.state.versions} onChange={this.onDeploymentVersionSelected} placeholder="Select Version" />;
+                <Dropdown options={this.state.versionsArray} value={this.state.versions} onChange={this.onDeploymentVersionSelected} placeholder="Select Version" />
                 </div>
                 <div className="col-3 form-group">
                  <input className="form-control" placeholder={'Enter URL'} type="text" value={this.state.url} onChange={this.deploymenturlChanges} /><br />
