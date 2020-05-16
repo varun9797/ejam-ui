@@ -79,7 +79,7 @@ class Counter extends Component {
                 <Dropdown options={this.state.versionsArray} value={this.state.versions} onChange={this.onDeploymentVersionSelected} placeholder="Select Version" />;
                 </div>
                 <div className="col-3 form-group">
-                 <input class="form-control" placeholder={'Enter URL'} type="text" value={this.state.url} onChange={this.deploymenturlChanges} /><br />
+                 <input className="form-control" placeholder={'Enter URL'} type="text" value={this.state.url} onChange={this.deploymenturlChanges} /><br />
                 </div>
                 <div className="col-3">
                 <button className="btn btn-success" onClick={() => this.onSubmitDeployment(this.state)}>Submit</button>
