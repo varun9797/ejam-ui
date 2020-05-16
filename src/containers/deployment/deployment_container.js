@@ -32,7 +32,8 @@ class Counter extends Component {
 
     deploymentNameChanges = (e) => {
         this.setState({
-            name: e.target.value
+            name: e.target.value,
+            versions:""
         })
     }
     deploymentVersionChanges = (e) => {
@@ -48,8 +49,7 @@ class Counter extends Component {
     onDeploymentTemplateSelected = (data) => {
         this.setState({
             name: data.label,
-            versionsArray: data.value,
-            versions:""
+            versionsArray: data.value
         })
     }
     onDeploymentVersionSelected = (data) => {
