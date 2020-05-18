@@ -4,6 +4,7 @@ import * as actionCreators from '../../store/actions/index';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import './deployment_container.css';
+import DeploymentList from '../../components/deploymentlist'
 
 class Counter extends Component {
     state = {
@@ -13,7 +14,7 @@ class Counter extends Component {
         id: "",
         templateData: [],
         versionsArray: [],
-        showSpinner:false
+        showSpinner: false
     }
     componentDidMount() {
         this.props.getTemplateData();
@@ -29,9 +30,9 @@ class Counter extends Component {
             })
             this.setState({ templateData: newTemplateObject })
         }
-        if(newProps.showSpinner == false){
+        if (newProps.showSpinner === false) {
             this.setState({
-                showSpinner:false
+                showSpinner: false
             })
         }
     }
@@ -39,7 +40,7 @@ class Counter extends Component {
     deploymentNameChanges = (e) => {
         this.setState({
             name: e.target.value,
-            versions:null
+            versions: null
         })
     }
     deploymentVersionChanges = (e) => {
@@ -56,7 +57,7 @@ class Counter extends Component {
         this.setState({
             name: data.label,
             versionsArray: data.value,
-            versions:""
+            versions: ""
         })
     }
     onDeploymentVersionSelected = (data) => {
@@ -65,16 +66,18 @@ class Counter extends Component {
         })
     }
     onSubmitDeployment = (object) => {
-        if(object.name && object.versions && object.url){
+        if (object.name && object.versions && object.url) {
             this.setState({
-                showSpinner:true
+                showSpinner: true
             })
             this.props.onSubmitDeployment(object);
+        } else {
+            alert("All Fields are required")
         }
     }
     onDeleteDeployment = (id) => {
         this.setState({
-            showSpinner:true
+            showSpinner: true
         })
         this.props.onDeleteDeployment(id);
     }
@@ -83,45 +86,45 @@ class Counter extends Component {
     render() {
         return (
             <div>
-             {/* {JSON.stringify(this.state.showSpinner)}  */}
                 <div className="addControl">
-                <div className="row">
-                <div className="col-3">
-                    <Dropdown options={this.state.templateData} value={this.state.name} onChange={this.onDeploymentTemplateSelected} placeholder="Select Template" /></div>
-                <div className="col-3">
-                <Dropdown options={this.state.versionsArray} value={this.state.versions} onChange={this.onDeploymentVersionSelected} placeholder="Select Version" />
+                    <div className="row">
+                        <div className="col-3">
+                            <Dropdown options={this.state.templateData} value={this.state.name} onChange={this.onDeploymentTemplateSelected} placeholder="Select Template" /></div>
+                        <div className="col-3">
+                            <Dropdown options={this.state.versionsArray} value={this.state.versions} onChange={this.onDeploymentVersionSelected} placeholder="Select Version" />
+                        </div>
+                        <div className="col-3 form-group">
+                            <input className="form-control" placeholder={'Enter URL'} type="text" value={this.state.url} onChange={this.deploymenturlChanges} /><br />
+                        </div>
+                        <div className="col-3">
+                            <button className="btn btn-success" onClick={() => this.onSubmitDeployment(this.state)}>Submit</button>
+                        </div>
+                    </div>
                 </div>
-                <div className="col-3 form-group">
-                 <input className="form-control" placeholder={'Enter URL'} type="text" value={this.state.url} onChange={this.deploymenturlChanges} /><br />
+                <hr />
+                <div className="spinner-div">
+                    {this.state.showSpinner ? <div className="loader"></div> : ""}
                 </div>
-                <div className="col-3">
-                <button className="btn btn-success" onClick={() => this.onSubmitDeployment(this.state)}>Submit</button>
-                </div>
-            </div>
-                </div>
-               <hr />
-               <div className="spinner-div">
-               {this.state.showSpinner?<div className="loader"></div>:""}
-               </div>
                 <ul>
-                    {this.props.storedResults.map(strResult => (
-                        <div key={strResult._id} className="showControl">
+                    <div key={'listHeader'} className="showHeaderControl">
                         <div className="row">
                             <div className="col-3">
-                                {strResult.name}
+                                Template Name
                             </div>
                             <div className="col-3">
-                                {strResult.versions}
+                                Version Name
                             </div>
                             <div className="col-3">
-                                {strResult.url}
-                            </div>
+                                Url
+                             </div>
                             <div className="col-3">
-                            <i className="fa fa-close" key={strResult._id} onClick={() => this.onDeleteDeployment(strResult._id)}>
-                            </i>
+                                Action
                             </div>
                         </div>
-                        </div>
+                    </div>
+                    {this.props.storedResults.map(strResult => (
+                        <DeploymentList key={strResult._id} listProps={strResult}
+                            onDeleteDeployment={(id) => this.onDeleteDeployment(id)}></DeploymentList>
                     ))}
                 </ul>
             </div>
@@ -134,7 +137,7 @@ const mapStateToProps = state => {
         templateObject: state.template.templateData,
         ctr: state.template.counter,
         storedResults: state.deploy.results,
-        showSpinner:state.deploy.showSpinner,
+        showSpinner: state.deploy.showSpinner,
         deployedResponse: state.deploy.response
     }
 };
@@ -144,7 +147,7 @@ const mapDispatchToProps = dispatch => {
         onSubmitDeployment: (stateObj) => dispatch(actionCreators.submitDeployment(stateObj)),
         getTemplateData: () => dispatch(actionCreators.getTemplate()),
         getAllDeployment: () => dispatch(actionCreators.getDeployment()),
-        onDeleteDeployment:(id) => dispatch(actionCreators.onDeleteDeployment(id))
+        onDeleteDeployment: (id) => dispatch(actionCreators.onDeleteDeployment(id))
     }
 };
 
