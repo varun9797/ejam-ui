@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import * as actionCreators from '../../store/actions/index';
 import Dropdown from 'react-dropdown';
@@ -6,130 +6,129 @@ import 'react-dropdown/style.css';
 import './deployment_container.css';
 import DeploymentList from '../../components/deploymentlist'
 
-class Counter extends Component {
-    state = {
+const Counter = (props) => {
+    const [deploymentState, setDeploymentState] = useState({
         name: "",
         versions: "",
         url: "",
         id: "",
         templateData: [],
         versionsArray: [],
-        showSpinner: false
-    }
-    componentDidMount() {
-        this.props.getTemplateData();
-        this.props.getAllDeployment()
-    }
-
-    componentWillReceiveProps(newProps) {
-        if (newProps && newProps.templateObject) {
-            let newTemplateObject = newProps.templateObject.map((value) => {
-                return {
-                    value: value.versions, label: value.name
-                }
-            })
-            this.setState({ templateData: newTemplateObject })
+        showSpinner: false,
+        callApiFlag: true,
+    })
+    useEffect(() => {
+        console.log("deploymentState.callApiFlag", deploymentState.callApiFlag);
+        console.log("deploymentState", deploymentState.name);
+        if (deploymentState.callApiFlag) {
+            props.getTemplateData();
+            props.getAllDeployment();
+            setDeploymentState(() => ({
+                ...deploymentState,
+                callApiFlag: false
+            }))
         }
-        if (newProps.showSpinner === false) {
-            this.setState({
-                showSpinner: false
-            })
-        }
-    }
+        if (!deploymentState.callApiFlag) {
+            if (props && props.templateObject) {
+                let newTemplateObject = props.templateObject.map((value) => {
+                    return {
+                        value: value.versions, label: value.name
+                    }
+                })
+                console.log("**********", newTemplateObject);
 
-    deploymentNameChanges = (e) => {
-        this.setState({
-            name: e.target.value,
-            versions: null
-        })
-    }
-    deploymentVersionChanges = (e) => {
-        this.setState({
-            versions: e.target.value
-        })
-    }
-    deploymenturlChanges = (e) => {
-        this.setState({
+                setDeploymentState(() => ({
+                    ...deploymentState,
+                    templateData: newTemplateObject,
+                    showSpinner: false
+                }))
+            }
+        }
+    }, [props])
+
+    const deploymenturlChanges = (e) => {
+        setDeploymentState({
+            ...deploymentState,
             url: e.target.value
         })
     }
-    onDeploymentTemplateSelected = (data) => {
-        this.setState({
+    const onDeploymentTemplateSelected = (data) => {
+        setDeploymentState({
+            ...deploymentState,
             name: data.label,
             versionsArray: data.value,
             versions: ""
         })
     }
-    onDeploymentVersionSelected = (data) => {
-        this.setState({
+    const onDeploymentVersionSelected = (data) => {
+        setDeploymentState({
+            ...deploymentState,
             versions: data.value
         })
     }
-    onSubmitDeployment = (object) => {
+    const onSubmitDeployment = (object) => {
         if (object.name && object.versions && object.url) {
-            this.setState({
+            setDeploymentState({
+                ...deploymentState,
                 showSpinner: true
             })
-            this.props.onSubmitDeployment(object);
+            props.onSubmitDeployment(object);
         } else {
             alert("All Fields are required")
         }
     }
-    onDeleteDeployment = (id) => {
-        this.setState({
+    const onDeleteDeployment = (id) => {
+        setDeploymentState({
+            ...deploymentState,
             showSpinner: true
         })
-        this.props.onDeleteDeployment(id);
+        props.onDeleteDeployment(id);
     }
-
-
-    render() {
-        return (
-            <div>
-                <div className="addControl">
+    return (
+        <div>
+            <div className="addControl">
+                <div className="row">
+                    <div className="col-3">
+                        <Dropdown options={deploymentState.templateData} value={deploymentState.name} onChange={onDeploymentTemplateSelected} placeholder="Select Template" /></div>
+                    <div className="col-3">
+                        <Dropdown options={deploymentState.versionsArray} value={deploymentState.versions} onChange={onDeploymentVersionSelected} placeholder="Select Version" />
+                    </div>
+                    <div className="col-3 form-group">
+                        <input className="form-control" placeholder={'Enter URL'} type="text" value={deploymentState.url} onChange={deploymenturlChanges} /><br />
+                    </div>
+                    <div className="col-3">
+                        <button className="btn btn-success" onClick={() => onSubmitDeployment(deploymentState)}>Submit</button>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div className="spinner-div">
+                {deploymentState.showSpinner ? <div className="loader"></div> : ""}
+            </div>
+            <ul>
+                <div key={'listHeader'} className="showHeaderControl">
                     <div className="row">
                         <div className="col-3">
-                            <Dropdown options={this.state.templateData} value={this.state.name} onChange={this.onDeploymentTemplateSelected} placeholder="Select Template" /></div>
-                        <div className="col-3">
-                            <Dropdown options={this.state.versionsArray} value={this.state.versions} onChange={this.onDeploymentVersionSelected} placeholder="Select Version" />
-                        </div>
-                        <div className="col-3 form-group">
-                            <input className="form-control" placeholder={'Enter URL'} type="text" value={this.state.url} onChange={this.deploymenturlChanges} /><br />
-                        </div>
-                        <div className="col-3">
-                            <button className="btn btn-success" onClick={() => this.onSubmitDeployment(this.state)}>Submit</button>
-                        </div>
-                    </div>
-                </div>
-                <hr />
-                <div className="spinner-div">
-                    {this.state.showSpinner ? <div className="loader"></div> : ""}
-                </div>
-                <ul>
-                    <div key={'listHeader'} className="showHeaderControl">
-                        <div className="row">
-                            <div className="col-3">
-                                Template Name
+                            Template Name
                             </div>
-                            <div className="col-3">
-                                Version Name
+                        <div className="col-3">
+                            Version Name
                             </div>
-                            <div className="col-3">
-                                Url
+                        <div className="col-3">
+                            Url
                              </div>
-                            <div className="col-3">
-                                Action
+                        <div className="col-3">
+                            Action
                             </div>
-                        </div>
                     </div>
-                    {this.props.storedResults.map(strResult => (
-                        <DeploymentList key={strResult._id} listProps={strResult}
-                            onDeleteDeployment={(id) => this.onDeleteDeployment(id)}></DeploymentList>
-                    ))}
-                </ul>
-            </div>
-        );
-    }
+                </div>
+                {props.storedResults.map(strResult => (
+                    <DeploymentList key={strResult._id} listProps={strResult}
+                        onDeleteDeployment={(id) => onDeleteDeployment(id)}></DeploymentList>
+                ))}
+            </ul>
+        </div>
+    );
 }
 
 const mapStateToProps = state => {
