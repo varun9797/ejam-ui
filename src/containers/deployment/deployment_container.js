@@ -14,37 +14,28 @@ const Counter = (props) => {
         id: "",
         templateData: [],
         versionsArray: [],
-        showSpinner: false,
-        callApiFlag: true,
+        showSpinner: false
     })
     useEffect(() => {
-        console.log("deploymentState.callApiFlag", deploymentState.callApiFlag);
-        console.log("deploymentState", deploymentState.name);
-        if (deploymentState.callApiFlag) {
-            props.getTemplateData();
-            props.getAllDeployment();
-            setDeploymentState(() => ({
-                ...deploymentState,
-                callApiFlag: false
-            }))
-        }
-        if (!deploymentState.callApiFlag) {
             if (props && props.templateObject) {
                 let newTemplateObject = props.templateObject.map((value) => {
                     return {
                         value: value.versions, label: value.name
                     }
                 })
-                console.log("**********", newTemplateObject);
-
+                console.log("*****");
                 setDeploymentState(() => ({
                     ...deploymentState,
                     templateData: newTemplateObject,
                     showSpinner: false
                 }))
             }
-        }
     }, [props])
+
+    useEffect(()=>{
+        props.getTemplateData();
+        props.getAllDeployment();
+    }, [])
 
     const deploymenturlChanges = (e) => {
         setDeploymentState({
